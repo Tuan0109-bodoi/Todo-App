@@ -64,6 +64,7 @@ h1 {
 }
 
 .input-group {
+  
   width: 100%;
   margin-bottom: 15px;
   position: relative;
@@ -81,6 +82,7 @@ h1 {
 }
 
 .input-icon {
+  pointer-events: none;
   position: absolute;
   right: 15px;
   top: 50%;

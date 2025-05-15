@@ -59,6 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Lưu token vào localStorage
             localStorage.setItem('token', data.token);
+
+            if (rememberMe) {
+                localStorage.setItem('rememberMe', JSON.stringify({ username, password }));
+            } else {
+                localStorage.removeItem('rememberMe');
+            }
             
             // Hiển thị thông báo thành công
             showSuccessMessage('Đăng nhập thành công! Đang chuyển hướng...');
@@ -66,39 +72,24 @@ document.addEventListener('DOMContentLoaded', () => {
             // Chuyển hướng đến trang todo
             setTimeout(() => {
                 window.location.href = 'todo.html';
-            }, 1000);
+            }, 200); // Reduced timeout to 200ms
             
         } catch (error) {
             showErrorMessage(error.message);
         }
     });
+
     
     function showErrorMessage(message) {
-        // Xóa thông báo cũ nếu có
-        const existingMessages = document.querySelectorAll('.message');
-        existingMessages.forEach(msg => msg.remove());
-        
-        // Tạo thông báo lỗi mới
+        const existingMessage = document.querySelector('.message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
         const errorDiv = document.createElement('div');
         errorDiv.className = 'error-message message';
-        errorDiv.style.backgroundColor = '#f8d7da';
-        errorDiv.style.color = '#721c24';
-        errorDiv.style.padding = '10px';
-        errorDiv.style.borderRadius = '4px';
-        errorDiv.style.marginBottom = '15px';
-        errorDiv.style.textAlign = 'center';
         errorDiv.textContent = message;
-        
-        // Thêm vào đầu form body
         const loginBody = document.querySelector('.login-body');
-        if (loginBody) {
-            loginBody.insertBefore(errorDiv, loginBody.firstChild);
-        }
-        
-        // Ẩn sau 3 giây
-        setTimeout(() => {
-            errorDiv.style.display = 'none';
-        }, 3000);
+        loginBody.insertBefore(errorDiv, loginBody.firstChild);
     }
     
     function showSuccessMessage(message) {

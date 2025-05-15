@@ -456,7 +456,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             searchTimeout = setTimeout(() => {
                 filterTasks();
-            }, 1000);
+            }, 200); // Reduced timeout to 200ms
         });
     }
 

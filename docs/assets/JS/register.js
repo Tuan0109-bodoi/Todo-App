@@ -40,6 +40,12 @@ document.addEventListener('DOMContentLoaded', () => {
             showErrorMessage('Mật khẩu không khớp!');
             return;
         }
+
+        // Kiểm tra mật khẩu hợp lệ
+        if (!password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)) {
+            showErrorMessage('Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt!');
+            return;
+        }
         
         try {
             const response = await fetch(`${API_URL}/auth/register`, { // Thay đổi URL từ localhost sang biến API_URL
@@ -57,16 +63,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             
             if (!response.ok) {
-                throw new Error(data.error || 'Đăng ký thất bại');
+                if (data.error.includes('email')) {
+                    throw new Error('Email đã tồn tại!');
+                } else if (data.error.includes('username')) {
+                    throw new Error('Tên đăng nhập đã tồn tại!');
+                } else {
+                    throw new Error(data.error || 'Đăng ký thất bại');
+                }
             }
             
             // Hiển thị thông báo thành công
             showSuccessMessage('Đăng ký thành công! Đang chuyển hướng đến trang đăng nhập...');
             
-            // Chuyển hướng đến trang đăng nhập sau 2 giây
+            // Chuyển hướng đến trang đăng nhập sau 200ms
             setTimeout(() => {
                 window.location.href = 'login.html';
-            }, 2000);
+            }, 200);
             
         } catch (error) {
             showErrorMessage(error.message);
@@ -88,11 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Thêm vào đầu form
         const authBody = registerForm.querySelector('.auth-body');
         authBody.insertBefore(errorDiv, authBody.firstChild);
-        
-        // Ẩn sau 3 giây
-        setTimeout(() => {
-            errorDiv.style.display = 'none';
-        }, 3000);
     }
     
     function showSuccessMessage(message) {
