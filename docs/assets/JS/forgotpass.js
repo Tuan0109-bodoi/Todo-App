@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         try {
-            const response = await fetch(`https://todo-app-gpqw.onrender.com/auth/reset-password/${token}`, {
+            const response = await fetch(`${API_URL}/auth/reset-password/${token}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resetButton.textContent = 'Đang xử lý...';
             resetButton.disabled = true;
             
-            const response = await fetch('https://todo-app-gpqw.onrender.com/auth/forgot-password', {
+            const response = await fetch(`${API_URL}/auth/forgot-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

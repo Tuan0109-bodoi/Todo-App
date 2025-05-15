@@ -83,7 +83,7 @@ exports.forgotPassword = async (req, res) => {
         await UserModel.saveResetToken(user.id, resetToken);
         
         // Tạo URL đặt lại mật khẩu
-        const resetUrl = `https://todo-app-gpqw.onrender.com/pages/reset-password.html?token=${resetToken}`;
+        const resetUrl = `https://tuan0109-bodoi.github.io/Todo-App/pages/reset-password.html?token=${resetToken}`;
         
         // Gửi email thực sự qua Nodemailer
         await emailService.sendResetPasswordEmail(email, resetUrl);

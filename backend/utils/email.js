@@ -30,7 +30,7 @@ exports.sendEmail = async (options) => {
 
 // Hàm gửi email đặt lại mật khẩu
 exports.sendResetPasswordEmail = async (email, resetToken) => {
-    const resetUrl = `http://localhost:3000/pages/reset-password.html?token=${resetToken}`;
+    const resetUrl = `https://tuan0109-bodoi.github.io/Todo-App/pages/reset-password.html?token=${resetToken}`;
     
     return this.sendEmail({
         to: email,

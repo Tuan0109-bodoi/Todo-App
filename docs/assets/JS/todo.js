@@ -74,8 +74,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const arrowForwardBtn = document.getElementById('arrow_forward');
     const confirmBtn = document.getElementById('confirm');
 
-    // Địa chỉ API base
-    const API_BASE = 'https://todo-app-gpqw.onrender.com';
+    // Loại bỏ định nghĩa API_BASE và API_URL trùng lặp (dòng 231-232):
+    // const API_BASE = 'https://todo-app-gpqw.onrender.com';
+    // const API_URL = API_BASE;
+
+    // Vì đã có biến API_URL từ config.js
 
     // Thêm biến này để lưu thông tin phân trang hiện tại
     let currentPagination = null;
@@ -96,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //  Tạo task mới
     async function createTask(taskname, status = false) {
         try {
-            const response = await fetch(`${API_BASE}/todo/tasks`, { // UPDATED
+            const response = await fetch(`${API_URL}/todo/tasks`, { // UPDATED
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ taskname, status })
@@ -118,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Tạo URL có tham số phân trang - UPDATED
-            const url = `${API_BASE}/todo/tasks?page=${page}&limit=${itemsPerPage}`;
+            const url = `${API_URL}/todo/tasks?page=${page}&limit=${itemsPerPage}`;
 
             // Gọi API
             const response = await fetch(url);
@@ -358,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const searchKeyword = searchInput ? searchInput.value.trim() || null : null;
 
-            const response = await fetch(`${API_BASE}/todo/search`, { // UPDATED
+            const response = await fetch(`${API_URL}/todo/search`, { // UPDATED
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -430,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function doneTask(id, liElement, task) {
         try {
             const newStatus = !task.Status;
-            const response = await fetch(`${API_BASE}/todo/tasks/${id}`, { // UPDATED
+            const response = await fetch(`${API_URL}/todo/tasks/${id}`, { // UPDATED
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, taskname: task.TaskName, status: newStatus })
@@ -468,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmDelete = confirm("Bạn có chắc muốn xóa công việc này?");
         if (!confirmDelete) return;
         try {
-            const response = await fetch(`${API_BASE}/todo/tasks/${id}`, { // UPDATED
+            const response = await fetch(`${API_URL}/todo/tasks/${id}`, { // UPDATED
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -494,7 +497,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cập nhật task (sử dụng khi sửa nội dung)
     async function updateTask(id, taskname, status) {
         try {
-            const response = await fetch(`${API_BASE}/todo/tasks/${id}`, { // UPDATED
+            const response = await fetch(`${API_URL}/todo/tasks/${id}`, { // UPDATED
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, taskname, status })

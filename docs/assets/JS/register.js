@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordInputs = document.querySelectorAll('input[type="password"]');
     const registerButton = document.querySelector('.register-button');
     
+    
     registerButton.addEventListener('click', async (e) => {
         e.preventDefault();
         
@@ -33,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         try {
-            const response = await fetch('http://localhost:3000/auth/register', {
+            const response = await fetch(`${API_URL}/auth/register`, { // Thay đổi URL từ localhost sang biến API_URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
