@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     helpText.style.color = '#666';
     helpText.style.marginTop = '5px';
     helpText.style.textAlign = 'left';
-    helpText.innerHTML = 'Bạn có thể đăng nhập bằng tên đăng nhập hoặc email';
 
     const firstInputGroup = document.querySelector('.input-group');
     firstInputGroup.appendChild(helpText);
