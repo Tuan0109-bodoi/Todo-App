@@ -81,15 +81,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
     function showErrorMessage(message) {
+        // Xóa thông báo cũ nếu có
         const existingMessage = document.querySelector('.message');
         if (existingMessage) {
             existingMessage.remove();
         }
+        
+        // Tạo thông báo lỗi mới
         const errorDiv = document.createElement('div');
         errorDiv.className = 'error-message message';
         errorDiv.textContent = message;
+        
+        // Thêm vào đầu form
         const loginBody = document.querySelector('.login-body');
         loginBody.insertBefore(errorDiv, loginBody.firstChild);
+        
+        // Không sử dụng setTimeout để ẩn, message sẽ hiển thị cho đến khi người dùng sửa lỗi
     }
     
     function showSuccessMessage(message) {
@@ -100,12 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Tạo thông báo thành công
         const successDiv = document.createElement('div');
         successDiv.className = 'success-message message';
-        successDiv.style.backgroundColor = '#d4edda';
-        successDiv.style.color = '#155724';
-        successDiv.style.padding = '10px';
-        successDiv.style.borderRadius = '4px';
-        successDiv.style.marginBottom = '15px';
-        successDiv.style.textAlign = 'center';
         successDiv.textContent = message;
         
         // Thêm vào đầu form body

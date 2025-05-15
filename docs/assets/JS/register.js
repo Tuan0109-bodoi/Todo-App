@@ -100,6 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Thêm vào đầu form
         const authBody = registerForm.querySelector('.auth-body');
         authBody.insertBefore(errorDiv, authBody.firstChild);
+        
+        // Không sử dụng setTimeout để ẩn, message sẽ hiển thị cho đến khi người dùng sửa lỗi
     }
     
     function showSuccessMessage(message) {
@@ -112,12 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Tạo thông báo thành công mới
         const successDiv = document.createElement('div');
         successDiv.className = 'success-message message';
-        successDiv.style.backgroundColor = '#d4edda';
-        successDiv.style.color = '#155724';
-        successDiv.style.padding = '10px';
-        successDiv.style.borderRadius = '4px';
-        successDiv.style.marginBottom = '15px';
-        successDiv.style.textAlign = 'center';
         successDiv.textContent = message;
         
         // Thêm vào đầu form

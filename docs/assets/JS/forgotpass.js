@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         successMessage.style.display = 'none';
         errorMessage.textContent = message;
         errorMessage.style.display = 'block';
+        errorMessage.className = 'error-message message';
     }
     
     function showSuccessMessage(message) {
@@ -88,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         errorMessage.style.display = 'none';
         successMessage.textContent = message;
         successMessage.style.display = 'block';
+        successMessage.className = 'success-message message';
     }
     
     function disableForm() {
@@ -180,13 +182,6 @@ function initForgotPasswordForm() {
         
         const successDiv = document.createElement('div');
         successDiv.className = 'success-message message';
-        successDiv.style.backgroundColor = '#d4edda';
-        successDiv.style.color = '#155724';
-        successDiv.style.padding = '10px 15px';
-        successDiv.style.borderRadius = '4px';
-        successDiv.style.marginBottom = '20px';
-        successDiv.style.textAlign = 'center';
-        successDiv.style.width = '100%';
         successDiv.textContent = message;
         
         // Thêm vào đầu form
@@ -201,16 +196,11 @@ function initForgotPasswordForm() {
         
         const errorDiv = document.createElement('div');
         errorDiv.className = 'error-message message';
-        errorDiv.style.backgroundColor = '#f8d7da';
-        errorDiv.style.color = '#721c24';
-        errorDiv.style.padding = '10px 15px';
-        errorDiv.style.borderRadius = '4px';
-        errorDiv.style.marginBottom = '20px';
-        errorDiv.style.textAlign = 'center';
-        errorDiv.style.width = '100%';
         errorDiv.textContent = message;
         
         // Thêm vào đầu form
         forgotForm.insertBefore(errorDiv, forgotForm.firstChild);
+        
+        // Không sử dụng setTimeout để ẩn, message sẽ hiển thị cho đến khi người dùng sửa lỗi
     }
 }
