@@ -73,17 +73,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusFilter = document.getElementById('status-filter');
     const errorMessageElement = document.getElementById('error-message');
     const limitInput = document.getElementById('limit-input'); // Thêm input cho limit
-    // Thêm biến để lưu timeout
     let searchTimeout;
 
-    // Thêm dòng này sau các biến khác ở đầu file
     const pageInput = document.getElementById('page-input');
     const firstPageBtn = document.getElementById('first_page');
     const lastPageBtn = document.getElementById('last_page');
     const arrowBackBtn = document.getElementById('arrow_back');
     const arrowForwardBtn = document.getElementById('arrow_forward');
     const confirmBtn = document.getElementById('confirm');
-
 
     let currentPagination = null;
 
@@ -103,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //  Tạo task mới
     async function createTask(taskname, status = false) {
         try {
-            console.log('Creating task:', { taskname, status }); // Debug logging
             const response = await fetch(`${API_URL}/todo/tasks`, {
                 method: 'POST',
                 headers: { 
@@ -113,15 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             const data = await response.json();
-            console.log('Create task response:', data); // Debug logging
-            
             if (!response.ok) {
                 throw new Error(data.error || `Error: ${response.status}`);
             }
-            
             getTask(); // Refresh the task list
         } catch (error) {
-            console.error('Lỗi khi tạo task:', error);
             showError('Không thể tạo công việc mới. Vui lòng kiểm tra kết nối.');
         }
     }
@@ -129,125 +121,81 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cập nhật hàm getTask() với phân trang
     async function getTask(page = 1, itemsPerPage = 5) {
         try {
-            // Lấy limit từ input nếu có
             if (limitInput) {
                 itemsPerPage = parseInt(limitInput.value) || itemsPerPage;
             }
-
-            // Tạo URL có tham số phân trang
             const url = `${API_URL}/todo/tasks?page=${page}&limit=${itemsPerPage}`;
-            console.log('Fetching tasks from:', url); // Debug logging
-
-            // Gọi API
             const response = await fetch(url);
             const data = await response.json();
-            console.log('Task response:', data); // Debug logging
-            
             if (!response.ok) {
                 throw new Error(data.error || `Error: ${response.status}`);
             }
-
-            // Render danh sách task
             renderTasks(data.data || []);
-
-            // Render UI phân trang
             if (data.pagination) {
                 renderPagination(data.pagination);
             }
         } catch (error) {
-            console.error('Lỗi khi lấy danh sách task:', error);
             showError('Không thể tải danh sách công việc. Vui lòng kiểm tra kết nối.');
-            renderTasks([]); // Hiển thị danh sách rỗng nếu có lỗi
+            renderTasks([]);
         }
     }
 
     function renderPagination(pagination) {
         if (!pagination) return;
-
-        // Lưu lại thông tin phân trang hiện tại
         currentPagination = pagination;
-
         const { current_page, total_pages } = pagination;
         const paginationElement = document.getElementById('pagination');
         if (!paginationElement) return;
-
         paginationElement.innerHTML = '';
         const maxVisible = 5;
         let startPage, endPage;
-
         if (total_pages <= maxVisible) {
-            // Nếu tổng số trang ít hơn maxVisible, hiển thị tất cả
             startPage = 1;
             endPage = total_pages;
-        }
-        else {
-            // Sửa lại dòng này - xác định một nửa của số trang hiển thị
+        } else {
             const halfVisible = Math.floor(maxVisible / 2);
-
             if (current_page <= halfVisible) {
-                // Gần đầu danh sách
                 startPage = 1;
                 endPage = maxVisible;
-            }
-            else if (current_page + halfVisible >= total_pages) {
-                // Gần cuối danh sách
+            } else if (current_page + halfVisible >= total_pages) {
                 startPage = Math.max(1, total_pages - maxVisible + 1);
                 endPage = total_pages;
-            }
-            else {
-                // Ở giữa
+            } else {
                 startPage = current_page - halfVisible;
                 endPage = current_page + halfVisible;
             }
         }
-
         for (let i = startPage; i <= endPage; i++) {
             const li = document.createElement('li');
             li.textContent = i;
-
             if (i === current_page) {
                 li.classList.add('active');
             }
-
             li.addEventListener('click', () => {
                 getTask(i, pagination.limit);
             });
-
             paginationElement.appendChild(li);
         }
-
-        // Cập nhật trạng thái và sự kiện cho các nút điều hướng
         updateNavigationButtons(pagination);
-
-        // Cập nhật input trang hiện tại nếu có
         if (pageInput) {
             pageInput.value = current_page;
         }
     }
 
-    // Thêm hàm này sau hàm renderPagination
     function updateNavigationButtons(pagination) {
         const { current_page, total_pages, has_next_page, has_prev_page } = pagination;
-
-        // First page button
         if (firstPageBtn) {
             firstPageBtn.disabled = !has_prev_page;
             firstPageBtn.onclick = () => getTask(1, pagination.limit);
         }
-
-        // Previous page button
         if (arrowBackBtn) {
             arrowBackBtn.disabled = !has_prev_page;
             arrowBackBtn.onclick = () => getTask(current_page - 1, pagination.limit);
         }
-
-        // Next page button
         if (arrowForwardBtn) {
             arrowForwardBtn.disabled = !has_next_page;
             arrowForwardBtn.onclick = () => getTask(current_page + 1, pagination.limit);
         }
-
-        // Last page button
         if (lastPageBtn) {
             lastPageBtn.disabled = !has_next_page;
             lastPageBtn.onclick = () => getTask(total_pages, pagination.limit);
@@ -258,34 +206,27 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderTasks(tasks) {
         if (!todoList) return;
         todoList.innerHTML = '';
-
         if (tasks.length === 0) {
             const emptyMessage = document.createElement('li');
             emptyMessage.textContent = 'Không có công việc nào.';
             emptyMessage.classList.add('empty-message');
             todoList.appendChild(emptyMessage);
         } else {
-            // Render tất cả tasks
             tasks.forEach(task => {
                 const li = document.createElement('li');
                 li.classList.add('task-item');
-
-                // Tạo container cho phần thông tin task
                 const taskInfo = document.createElement('div');
                 taskInfo.classList.add('task-info');
-
-                // Task content và date vào task-info
                 const taskContent = document.createElement('div');
-                taskContent.textContent = task.TaskName;
+                taskContent.textContent = task.taskname;
                 taskContent.classList.add('task-content');
-                if (task.Status) {
+                if (task.status) {
                     taskContent.classList.add('done-task');
                 }
-
                 const dateInfo = document.createElement('small');
-                if (task.createdAt) {
+                if (task.createdat) {
                     try {
-                        const createdDate = new Date(task.createdAt.replace(' ', 'T'));
+                        const createdDate = new Date(task.createdat.replace(' ', 'T'));
                         if (!isNaN(createdDate.getTime())) {
                             const formatter = new Intl.DateTimeFormat('vi-VN', {
                                 year: 'numeric',
@@ -299,54 +240,39 @@ document.addEventListener('DOMContentLoaded', () => {
                             dateInfo.textContent = 'Thêm vào: Không xác định';
                         }
                     } catch (error) {
-                        console.error('Lỗi khi xử lý ngày tháng:', error);
                         dateInfo.textContent = 'Thêm vào: Không xác định';
                     }
                 } else {
                     dateInfo.textContent = 'Thêm vào: Không xác định';
                 }
                 dateInfo.classList.add('task-date');
-
-                // Thêm content và date vào taskInfo
                 taskInfo.appendChild(taskContent);
                 taskInfo.appendChild(dateInfo);
-
-                // Thay thế đoạn code hiện tại với đoạn này
                 const actionContainer = document.createElement('div');
                 actionContainer.classList.add('action-container');
-
-                // Nút Edit - màu cam
                 const editBtn = document.createElement('button');
                 editBtn.className = 'action-icon edit-icon';
                 editBtn.innerHTML = '<span class="material-symbols-outlined">edit</span>';
                 editBtn.title = 'Sửa';
                 editBtn.addEventListener('click', () => editTask(li, task));
-
-                // Nút Done/Undone - màu xanh lá
                 const doneBtn = document.createElement('button');
                 doneBtn.className = 'action-icon done-icon';
-                doneBtn.innerHTML = task.Status 
-                    ? '<span class="material-symbols-outlined">replay</span>' 
+                doneBtn.innerHTML = task.status
+                    ? '<span class="material-symbols-outlined">replay</span>'
                     : '<span class="material-symbols-outlined">check</span>';
-                doneBtn.title = task.Status ? 'Hoàn tác' : 'Hoàn thành';
-                if (task.Status) {
+                doneBtn.title = task.status ? 'Hoàn tác' : 'Hoàn thành';
+                if (task.status) {
                     doneBtn.classList.add('undone');
                 }
-                doneBtn.addEventListener('click', () => doneTask(task.ID, li, task));
-
-                // Nút Delete - màu đỏ
+                doneBtn.addEventListener('click', () => doneTask(task.id, li, task));
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'action-icon delete-icon';
                 deleteBtn.innerHTML = '<span class="material-symbols-outlined">delete</span>';
                 deleteBtn.title = 'Xóa';
-                deleteBtn.addEventListener('click', () => deleteTask(task.ID, li));
-
-                // Thay đổi thứ tự các nút: Edit, Done, Delete
+                deleteBtn.addEventListener('click', () => deleteTask(task.id, li));
                 actionContainer.append(editBtn, doneBtn, deleteBtn);
-
                 li.appendChild(taskInfo);
                 li.appendChild(actionContainer);
-
                 todoList.appendChild(li);
             });
         }
@@ -355,11 +281,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hàm xử lý lọc tasks
     async function filterTasks(page = 1, itemsPerPage = 5) {
         try {
-            // Lấy limit từ input nếu có
             if (limitInput) {
                 itemsPerPage = parseInt(limitInput.value) || itemsPerPage;
             }
-
             let status;
             if (statusFilter) {
                 switch (statusFilter.value) {
@@ -375,10 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 status = null;
             }
-
             const searchKeyword = searchInput ? searchInput.value.trim() || null : null;
-            console.log('Filtering tasks:', { searchKeyword, status, page, itemsPerPage }); // Debug logging
-
             const response = await fetch(`${API_URL}/todo/search`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -389,22 +310,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     limit: itemsPerPage
                 })
             });
-
             const data = await response.json();
-            console.log('Filter response:', data); // Debug logging
-            
             if (!response.ok) {
                 throw new Error(data.error || `Error: ${response.status}`);
             }
-
             renderTasks(data.data || []);
-
-            // Render phân trang nếu có
             if (data.pagination) {
                 renderPagination(data.pagination);
             }
         } catch (error) {
-            console.error('Lỗi khi lọc tasks:', error);
             showError('Không thể lọc danh sách công việc. Vui lòng kiểm tra kết nối.');
             renderTasks([]);
         }
@@ -414,23 +328,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function editTask(liElement, task) {
         const taskContent = liElement.querySelector('.task-content');
         if (!taskContent) return;
-
         const input = document.createElement("input");
         input.type = "text";
-        input.value = task.TaskName;
+        input.value = task.taskname;
         input.classList.add("edit-input");
-
         const oldContent = taskContent.textContent;
         taskContent.textContent = '';
         taskContent.appendChild(input);
         input.focus();
-
-        // Xử lý khi nhấn Enter
         input.addEventListener("keypress", async (e) => {
             if (e.key === "Enter") {
                 const newTaskName = input.value.trim();
-                if (newTaskName && newTaskName !== task.TaskName) {
-                    const success = await updateTask(task.ID, newTaskName, task.Status);
+                if (newTaskName && newTaskName !== task.taskname) {
+                    const success = await updateTask(task.id, newTaskName, task.status);
                     if (success) {
                         getTask(currentPagination ? currentPagination.current_page : 1);
                     } else {
@@ -441,15 +351,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-
-        // Xử lý khi nhấn Escape hoặc click ra ngoài
         input.addEventListener("keydown", (e) => {
             if (e.key === "Escape") {
                 taskContent.textContent = oldContent;
             }
         });
-
-        // Xử lý khi click ra ngoài
         input.addEventListener("blur", () => {
             taskContent.textContent = oldContent;
         });
@@ -458,42 +364,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Đánh dấu task hoàn thành
     async function doneTask(id, liElement, task) {
         try {
-            console.log('Updating task status:', { id, currentStatus: task.Status }); // Debug logging
-            const newStatus = !task.Status;
+            const newStatus = !task.status;
             const response = await fetch(`${API_URL}/todo/tasks/${id}`, { 
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, taskname: task.TaskName, status: newStatus })
+                body: JSON.stringify({ id, taskname: task.taskname, status: newStatus })
             });
-
             const data = await response.json();
-            console.log('Update status response:', data); // Debug logging
-            
             if (!response.ok) {
                 throw new Error(data.error || `Error: ${response.status}`);
             }
-
-            // Cập nhật UI trước khi reload
-            const taskContent = liElement.querySelector('.task-content');
-            const doneBtn = liElement.querySelector('.done-icon');
-
-            if (newStatus) {
-                taskContent.classList.add('done-task');
-                // Cập nhật icon thay vì text
-                doneBtn.innerHTML = '<span class="material-symbols-outlined">replay</span>';
-                doneBtn.title = 'Hoàn tác';
-            } else {
-                taskContent.classList.remove('done-task');
-                doneBtn.innerHTML = '<span class="material-symbols-outlined">check</span>';
-                doneBtn.title = 'Hoàn thành';
-            }
-
-            // Sau đó reload để đảm bảo đồng bộ
             setTimeout(() => {
                 getTask(currentPagination ? currentPagination.current_page : 1);
             }, 200);
         } catch (error) {
-            console.error('Lỗi khi cập nhật trạng thái task:', error);
             showError('Không thể cập nhật trạng thái công việc. Vui lòng kiểm tra kết nối.');
         }
     }
@@ -502,34 +386,24 @@ document.addEventListener('DOMContentLoaded', () => {
     async function deleteTask(id, liElement) {
         const confirmDelete = confirm("Bạn có chắc muốn xóa công việc này?");
         if (!confirmDelete) return;
-        
         try {
-            console.log('Deleting task:', id); // Debug logging
             const response = await fetch(`${API_URL}/todo/tasks/${id}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id }) // Add the ID in the request body
+                body: JSON.stringify({ id })
             });
-
             const data = await response.json();
-            console.log('Delete response:', data); // Debug logging
-            
             if (!response.ok) {
                 throw new Error(data.error || `Error: ${response.status}`);
             }
-
-            // Hiệu ứng mượt
             liElement.classList.add('removing');
             setTimeout(() => {
                 liElement.remove();
             }, 300);
-
-            // Giảm thời gian chờ từ 3000ms xuống 500ms để trải nghiệm người dùng tốt hơn
             setTimeout(() => {
                 getTask(currentPagination ? currentPagination.current_page : 1);
             }, 500);
         } catch (error) {
-            console.error('Lỗi khi xóa task:', error);
             showError('Không thể xóa công việc. Vui lòng kiểm tra kết nối.');
         }
     }
@@ -537,23 +411,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cập nhật task (sử dụng khi sửa nội dung)
     async function updateTask(id, taskname, status) {
         try {
-            console.log('Updating task:', { id, taskname, status }); // Debug logging
             const response = await fetch(`${API_URL}/todo/tasks/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, taskname, status })
             });
-
             const data = await response.json();
-            console.log('Update response:', data); // Debug logging
-            
             if (!response.ok) {
                 throw new Error(data.error || `Error: ${response.status}`);
             }
-            
             return true;
         } catch (error) {
-            console.error('Lỗi khi cập nhật task:', error);
             showError('Không thể cập nhật công việc. Vui lòng kiểm tra kết nối.');
             return false;
         }
@@ -564,10 +432,8 @@ document.addEventListener('DOMContentLoaded', () => {
         todoForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!todoInput) return;
-
             const taskText = todoInput.value.trim();
             if (!taskText) return;
-
             await createTask(taskText, false);
             todoInput.value = '';
         });
@@ -575,14 +441,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
-            // Clear timeout cũ nếu có
             if (searchTimeout) {
                 clearTimeout(searchTimeout);
             }
-
             searchTimeout = setTimeout(() => {
                 filterTasks();
-            }, 1000); // Reduced timeout for better UX
+            }, 1000);
         });
     }
 
@@ -592,10 +456,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Thêm event listener cho nút Confirm
     if (confirmBtn) {
         confirmBtn.addEventListener('click', () => {
-            getTask(1); // Reset về trang 1 khi thay đổi limit
+            getTask(1);
         });
     }
 
