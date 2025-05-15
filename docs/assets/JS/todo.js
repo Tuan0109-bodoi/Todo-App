@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof window.API_URL !== 'undefined') {
         API_URL = window.API_URL;
     }
+    console.log('Using API URL:', API_URL); // Debugging to confirm API URL
 });
 
 // Thêm hàm này vào đầu script
@@ -102,13 +103,23 @@ document.addEventListener('DOMContentLoaded', () => {
     //  Tạo task mới
     async function createTask(taskname, status = false) {
         try {
-            const response = await fetch(`${API_URL}/todo/tasks`, { // UPDATED
+            console.log('Creating task:', { taskname, status }); // Debug logging
+            const response = await fetch(`${API_URL}/todo/tasks`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ taskname, status })
             });
-            if (!response.ok) throw new Error(`Error: ${response.status}`);
-            getTask(); // Sử dụng getTask thay vì filterTasks để đảm bảo
+            
+            const data = await response.json();
+            console.log('Create task response:', data); // Debug logging
+            
+            if (!response.ok) {
+                throw new Error(data.error || `Error: ${response.status}`);
+            }
+            
+            getTask(); // Refresh the task list
         } catch (error) {
             console.error('Lỗi khi tạo task:', error);
             showError('Không thể tạo công việc mới. Vui lòng kiểm tra kết nối.');
@@ -125,23 +136,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Tạo URL có tham số phân trang
             const url = `${API_URL}/todo/tasks?page=${page}&limit=${itemsPerPage}`;
+            console.log('Fetching tasks from:', url); // Debug logging
 
             // Gọi API
             const response = await fetch(url);
+            const data = await response.json();
+            console.log('Task response:', data); // Debug logging
+            
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error || `Error: ${response.status}`);
+                throw new Error(data.error || `Error: ${response.status}`);
             }
 
-            // Xử lý response
-            const result = await response.json();
-
             // Render danh sách task
-            renderTasks(result.data || []);
+            renderTasks(data.data || []);
 
             // Render UI phân trang
-            if (result.pagination) {
-                renderPagination(result.pagination);
+            if (data.pagination) {
+                renderPagination(data.pagination);
             }
         } catch (error) {
             console.error('Lỗi khi lấy danh sách task:', error);
@@ -212,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pageInput) {
             pageInput.value = current_page;
         }
-
     }
 
     // Thêm hàm này sau hàm renderPagination
@@ -367,8 +377,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const searchKeyword = searchInput ? searchInput.value.trim() || null : null;
+            console.log('Filtering tasks:', { searchKeyword, status, page, itemsPerPage }); // Debug logging
 
-            const response = await fetch(`${API_URL}/todo/search`, { // UPDATED
+            const response = await fetch(`${API_URL}/todo/search`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -379,14 +390,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             });
 
-            if (!response.ok) throw new Error(`Error ${response.status}`);
+            const data = await response.json();
+            console.log('Filter response:', data); // Debug logging
+            
+            if (!response.ok) {
+                throw new Error(data.error || `Error: ${response.status}`);
+            }
 
-            const result = await response.json();
-            renderTasks(result.data || []);
+            renderTasks(data.data || []);
 
             // Render phân trang nếu có
-            if (result.pagination) {
-                renderPagination(result.pagination);
+            if (data.pagination) {
+                renderPagination(data.pagination);
             }
         } catch (error) {
             console.error('Lỗi khi lọc tasks:', error);
@@ -415,8 +430,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === "Enter") {
                 const newTaskName = input.value.trim();
                 if (newTaskName && newTaskName !== task.TaskName) {
-                    await updateTask(task.ID, newTaskName, task.Status);
-                    getTask(currentPagination ? currentPagination.current_page : 1);
+                    const success = await updateTask(task.ID, newTaskName, task.Status);
+                    if (success) {
+                        getTask(currentPagination ? currentPagination.current_page : 1);
+                    } else {
+                        taskContent.textContent = oldContent;
+                    }
                 } else {
                     taskContent.textContent = oldContent;
                 }
@@ -439,6 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Đánh dấu task hoàn thành
     async function doneTask(id, liElement, task) {
         try {
+            console.log('Updating task status:', { id, currentStatus: task.Status }); // Debug logging
             const newStatus = !task.Status;
             const response = await fetch(`${API_URL}/todo/tasks/${id}`, { 
                 method: 'PUT',
@@ -446,7 +466,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ id, taskname: task.TaskName, status: newStatus })
             });
 
-            if (!response.ok) throw new Error(`Error: ${response.status}`);
+            const data = await response.json();
+            console.log('Update status response:', data); // Debug logging
+            
+            if (!response.ok) {
+                throw new Error(data.error || `Error: ${response.status}`);
+            }
 
             // Cập nhật UI trước khi reload
             const taskContent = liElement.querySelector('.task-content');
@@ -477,14 +502,21 @@ document.addEventListener('DOMContentLoaded', () => {
     async function deleteTask(id, liElement) {
         const confirmDelete = confirm("Bạn có chắc muốn xóa công việc này?");
         if (!confirmDelete) return;
+        
         try {
+            console.log('Deleting task:', id); // Debug logging
             const response = await fetch(`${API_URL}/todo/tasks/${id}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id }) // Add the ID in the request body
             });
 
-            if (!response.ok) throw new Error(`Error: ${response.status}`);
+            const data = await response.json();
+            console.log('Delete response:', data); // Debug logging
+            
+            if (!response.ok) {
+                throw new Error(data.error || `Error: ${response.status}`);
+            }
 
             // Hiệu ứng mượt
             liElement.classList.add('removing');
@@ -505,13 +537,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cập nhật task (sử dụng khi sửa nội dung)
     async function updateTask(id, taskname, status) {
         try {
+            console.log('Updating task:', { id, taskname, status }); // Debug logging
             const response = await fetch(`${API_URL}/todo/tasks/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, taskname, status })
             });
 
-            if (!response.ok) throw new Error(`Error: ${response.status}`);
+            const data = await response.json();
+            console.log('Update response:', data); // Debug logging
+            
+            if (!response.ok) {
+                throw new Error(data.error || `Error: ${response.status}`);
+            }
+            
             return true;
         } catch (error) {
             console.error('Lỗi khi cập nhật task:', error);
@@ -543,7 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             searchTimeout = setTimeout(() => {
                 filterTasks();
-            }, 3000);
+            }, 1000); // Reduced timeout for better UX
         });
     }
 
