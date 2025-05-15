@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+    <link rel="stylesheet" href="../assets/CSS/forgotpass.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/CSS/common.css">
+    <script src="../assets/JS/forgotpass.js" defer></script>
+</head>
+<body>
+    <div class="auth-container forgotpass-container">
+        <div class="auth-header">
+            Forgot Password
+        </div>
+        <div class="auth-body">
+            <div class="avatar-container">
+                <i class="avatar-icon fas fa-key"></i>
+            </div>
+            
+            <div class="message success-message" style="display: none;">
+                Password reset instructions sent to your email!
+            </div>
+            
+            <div class="message error-message" style="display: none;">
+                Email not found. Please try again.
+            </div>
+            
+            <div class="input-group">
+                <input type="email" class="input-field" placeholder="Enter your email">
+                <span class="input-icon">
+                    <i class="fas fa-envelope"></i>
+                </span>
+            </div>
+            
+            <button class="auth-button forgotpass-button">Reset Password</button>
+            
+            <div class="auth-link login-link">
+                <a href="login.html">Back to Login</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

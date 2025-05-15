@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting...</title>
+    <script>
+        // Kiểm tra nếu đã đăng nhập thì đến todo, còn không thì đến login
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = 'pages/todo.html';
+            } else {
+                window.location.href = 'pages/login.html';
+            }
+        });
+    </script>
+</head>
+<body>
+    <p>Đang chuyển hướng...</p>
+</body>
+</html>

@@ -1,0 +1,166 @@
+body {
+    background: #7e57ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.login-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    overflow: hidden;
+}
+
+.login-header {
+    background-color: #f8f8f8;
+    color: #333333;
+    text-align: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.login-body {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    overflow: hidden;
+}
+
+.register-header {
+    background-color: #f8f8f8;
+    color: #333333;
+    text-align: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eaeaea;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.register-body {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.avatar-container {
+    background: #7e57ff;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.avatar-icon {
+    font-size: 40px;
+    color: white;
+}
+
+.input-group {
+    width: 100%;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    font-size: 15px;
+    color: #333333;
+    box-sizing: border-box;
+    padding-left: 40px; /* Tạo khoảng trống cho icon bên trái */
+}
+
+.input-field:focus {
+    border-color: #7e57ff;
+    outline: none;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px; /* Chuyển icon sang trái như trong ảnh */
+    top: 50%;
+    transform: translateY(-50%);
+    color: #7e57ff;
+    font-size: 20px;
+}
+
+.register-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.register-button:hover {
+    background-color: #333333;
+}
+
+.login-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.login-button:hover {
+    background-color: #333333;
+}
+
+/* Thêm style cho phần "Đã có tài khoản" */
+.login-link {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 15px;
+}
+
+.login-link a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+/* Fix style cho icon Material Symbols */
+.material-symbols-outlined {
+    font-size: 20px;
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24;
+}
+

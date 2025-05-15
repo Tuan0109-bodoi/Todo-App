@@ -1,0 +1,315 @@
+body {
+  background: #7e57ff;
+  /* Màu tím đồng nhất như trong hình */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+h1 {
+  text-align: center;
+  color: #333333;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+#todo-form {
+  display: list-item;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.login-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  overflow: hidden;
+}
+
+.login-header {
+  background-color: #f8f8f8;
+  /* Màu xám nhạt cho header */
+  color: #333333;
+  text-align: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.login-body {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar-container {
+  background: #7e57ff;
+  /* Màu tím đồng nhất với background */
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.avatar-icon {
+  font-size: 40px;
+  color: white;
+  /* Icon màu trắng */
+}
+
+.input-group {
+  width: 100%;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  /* Bo tròn input */
+  font-size: 15px;
+  color: #333333;
+  box-sizing: border-box;
+}
+
+.input-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7e57ff;
+  /* Màu icon tím */
+  font-size: 20px;
+}
+
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+}
+
+.remember input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #7e57ff;
+  margin-right: 8px;
+  position: relative;
+  cursor: pointer;
+}
+
+.remember input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #7e57ff;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.remember label {
+  color: #555;
+  cursor: pointer;
+}
+
+/* Hiệu ứng hover cho Forgot Password */
+.forgot {
+  color: #555;
+  /* Đổi màu ban đầu thành xám thay vì tím */
+  text-decoration: none;
+  transition: color 0.3s ease;
+  /* Thêm transition cho mượt */
+}
+
+.forgot:hover {
+  color: #7e57ff;
+  /* Chuyển sang tím khi hover */
+  text-decoration: underline;
+  /* Thêm gạch chân khi hover */
+}
+
+.login-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #000000;
+  /* Nút đen */
+  color: white;
+  border: none;
+  border-radius: 20px;
+  /* Bo tròn nút */
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+}
+
+.login-button:hover {
+  background-color: #333333;
+}
+
+/* Style cho focus */
+.input-field:focus {
+  border-color: #7e57ff;
+  outline: none;
+}
+
+/* Thêm vào CSS của bạn */
+.newly-added {
+  animation: highlight 2s ease;
+  border-left: 3px solid #4ade80;
+}
+
+.task-edited {
+  animation: edited-highlight 1s ease;
+}
+
+.just-added {
+  color: #10b981;
+  font-weight: bold;
+}
+
+@keyframes highlight {
+  0% {
+    background-color: rgba(74, 222, 128, 0.3);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes edited-highlight {
+  0% {
+    background-color: rgba(59, 130, 246, 0.3);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+.loading {
+  position: relative;
+  min-height: 100px;
+}
+
+.loading::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 10;
+}
+
+.loading::before {
+  content: "Loading...";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 11;
+  color: #333;
+  font-weight: bold;
+}
+
+/* Đảm bảo các nút action luôn hiển thị */
+.action-icon {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.action-container {
+  display: flex;
+  gap: 8px;
+}
+
+.task-completing {
+  animation: completing 0.5s ease;
+}
+
+.task-uncompleting {
+  animation: uncompleting 0.5s ease;
+}
+
+.success-message {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 15px;
+  background-color: #4ade80;
+  color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+.register-link {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 15px;
+}
+.register-link a {
+  color: #0092d5;
+  text-decoration: none;
+  font-weight: 500;
+}
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+.success-message.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+@keyframes completing {
+  0% {
+    background-color: transparent;
+  }
+
+  50% {
+    background-color: rgba(74, 222, 128, 0.3);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes uncompleting {
+  0% {
+    background-color: transparent;
+  }
+
+  50% {
+    background-color: rgba(239, 68, 68, 0.3);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}

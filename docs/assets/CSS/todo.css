@@ -1,0 +1,620 @@
+/* Thiết lập tổng thể cho trang */
+body {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Khung chứa To-Do List */
+.todo-container {
+    background-color: #ffffff;
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 800px;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+}
+
+.todo-container:hover {
+    transform: translateY(-5px);
+}
+
+/* Tiêu đề */
+h1 {
+    text-align: center;
+    color: #333333;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* Form thêm công việc */
+#todo-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#todo-input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+#limit-input {
+    width: 60px;
+    padding: 8px;
+    border: 2px solid #e0e0e0;
+    transition: border-color 0.3s;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+}
+
+#todo-input:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+/* Chỉ áp dụng cho button không có class .action-icon */
+button:not(.action-icon) {
+    padding: 12px 16px;
+    border: none;
+    background-color: #667eea;
+    color: #ffffff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+button:not(.action-icon):hover {
+    background-color: #5a67d8;
+}
+
+/* Vùng tìm kiếm và lọc */
+#search-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#search-input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+#search-input:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+#status-filter {
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    min-width: 140px;
+}
+
+#status-filter:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+/* Thông báo lỗi */
+.error-message {
+    color: #e74c3c;
+    background-color: #fadbd8;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    display: none;
+    text-align: center;
+}
+
+/* Danh sách công việc */
+#todo-list-container {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+#todo-list {
+    list-style: none;
+    flex-direction: unset;
+    padding: 0;
+    margin: 0;
+}
+
+/* Danh sách công việc - Sửa lại */
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.2s ease;
+}
+
+.task-item:last-child {
+    border-bottom: none;
+}
+
+.task-item:hover {
+    background-color: rgba(126, 87, 255, 0.05);
+    border-left: 3px solid #7e57ff;
+    padding-left: 12px;
+}
+
+/* Task info container - Thêm mới */
+.task-info {
+    flex: 1;
+    padding-right: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    /* Đảm bảo task-info hiển thị nội dung thay vì bị ẩn */
+    min-width: 0;
+    overflow: hidden;
+}
+
+.task-content {
+    margin: 0;
+    font-size: 16px;
+    /* Tránh nội dung dài làm vỡ layout */
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.task-content.done-task {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.task-date {
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
+    margin-top: 4px;
+}
+
+/* Action container & buttons - Sửa lại */
+.action-container {
+    display: flex;
+    gap: 8px;
+    /* Đảm bảo các icon không chiếm quá nhiều không gian */
+    min-width: max-content;
+}
+
+/* Đây là định nghĩa riêng cho icon */
+.action-icon {
+    background-color: transparent;
+    border: none;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    margin: 0 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.action-icon:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: scale(1.15);
+}
+
+.action-icon .material-symbols-outlined {
+    font-size: 22px;
+    transition: all 0.2s ease;
+}
+
+/* Style riêng cho từng loại icon */
+.edit-icon .material-symbols-outlined {
+    color: #f39c12;
+}
+
+.edit-icon:hover .material-symbols-outlined {
+    color: #e67e22;
+}
+
+.done-icon .material-symbols-outlined {
+    color: #27ae60;
+}
+
+.done-icon:hover .material-symbols-outlined {
+    color: #2ecc71;
+}
+
+.delete-icon .material-symbols-outlined {
+    color: #e74c3c;
+}
+
+.delete-icon:hover .material-symbols-outlined {
+    color: #c0392b;
+}
+
+/* Loại bỏ các style cũ để tránh xung đột */
+.delete-icon { background-color: transparent; }
+.delete-icon:hover { background-color: transparent; }
+.done-icon { background-color: transparent; }
+.done-icon:hover { background-color: transparent; }
+.edit-icon { background-color: transparent; }
+.edit-icon:hover { background-color: transparent; }
+
+/* Hiệu ứng khi xóa */
+.removing {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: all 0.3s ease;
+}
+
+/* Input khi edit */
+.edit-input {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #667eea;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.edit-input:focus {
+    outline: none;
+    border-color: #5a67d8;
+    box-shadow: 0 0 0 2px rgba(90, 103, 216, 0.2);
+}
+
+/* Container chỉnh sửa */
+.edit-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.edit-input {
+    flex: 1;
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.edit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.save-btn {
+    background-color: #4caf50;
+    color: white;
+}
+
+.cancel-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+.edit-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Hiệu ứng hoàn thành task */
+.task-completing {
+    animation: completeAnimation 0.5s ease forwards;
+}
+
+.task-uncompleting {
+    animation: uncompleteAnimation 0.5s ease forwards;
+}
+
+.refreshing {
+    animation: refreshList 0.3s ease;
+}
+
+/* Highlight trạng thái filter */
+.filter-all {
+    border-color: #2196F3;
+}
+
+.filter-completed {
+    border-color: #4CAF50;
+}
+
+.filter-uncompleted {
+    border-color: #FFC107;
+}
+
+.filter-all .task-item {
+    border-left: 3px solid #2196F3;
+}
+
+.filter-completed .task-item {
+    border-left: 3px solid #4CAF50;
+}
+
+.filter-uncompleted .task-item {
+    border-left: 3px solid #FFC107;
+}
+
+.filter-status {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    animation: slide-down 0.3s ease;
+    z-index: 100;
+}
+
+.fade-out {
+    animation: fade-out 0.5s ease forwards;
+}
+
+@keyframes slide-down { /* ... */ }
+@keyframes fade-out { /* ... */ }
+/* và các animation khác nếu không dùng */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes completeAnimation {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: translateX(5px);
+    }
+
+    100% {
+        opacity: 1;
+        text-decoration: line-through;
+        color: #757575;
+    }
+}
+
+@keyframes uncompleteAnimation {
+    0% {
+        opacity: 1;
+        text-decoration: line-through;
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: translateX(5px);
+    }
+
+    100% {
+        opacity: 1;
+        text-decoration: none;
+        color: inherit;
+    }
+}
+
+@keyframes refreshList {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Phân trang */
+.pagination-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+/* CSS cho page-jumper */
+.page-jumper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* CSS cho nút navigation */
+.page-jumper button {
+    background-color: transparent;
+    border: none;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 4px;
+    color: #555;
+}
+
+.page-jumper button:hover {
+    background-color: #f0f0f0;
+}
+
+.page-jumper button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* CSS cho danh sách trang */
+.pagination {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    gap: 6px;
+}
+
+/* Style cho số trang */
+.pagination li {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.pagination li:hover {
+    background-color: #f0f0f0;
+}
+
+/* Style cho số trang active */
+.pagination li.active {
+    background-color: #667eea;
+    color: white;
+}
+
+.pagination li.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background-color: white;
+}
+
+.pagination li.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Input trang */
+#page-input {
+    width: 60px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+}
+
+#page-input:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+/* Buttons jump */
+#jump-btn,
+#double-jump-btn {
+    background-color: #667eea;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.2s;
+}
+
+.loading {
+    position: relative;
+    min-height: 100px;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.loading::before {
+    content: "Loading...";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 11;
+    color: #333;
+    font-weight: bold;
+}
+
+#jump-btn:hover,
+#double-jump-btn:hover {
+    background-color: #5a67d8;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    .todo-container {
+        padding: 20px;
+    }
+
+    #search-container {
+        flex-direction: column;
+    }
+
+    #status-filter {
+        width: 100%;
+    }
+
+    .page-jumper {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
