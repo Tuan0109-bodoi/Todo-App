@@ -43,11 +43,13 @@ exports.createTask = async (req, res) => {
 exports.updateTask = async (req, res) => {
     try {
         const userId = req.userData.userId;
+        const paramId = req.params.id;
         const { id, taskname, status } = req.body;
-        if (!id || !taskname || status === undefined) {
+        const taskId = paramId || id; // Get ID from params or body
+        if (!taskId || !taskname || status === undefined) {
             return res.status(400).json({ error: 'ID, tên công việc và trạng thái là bắt buộc' });
         }
-        const result = await TodoModel.updateTask(userId, id, taskname, status);
+        const result = await TodoModel.updateTask(userId, taskId, taskname, status);
         res.json({ result: 'Cập nhật thành công', data: result });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -57,7 +59,7 @@ exports.updateTask = async (req, res) => {
 exports.deleteTask = async (req, res) => {
     try {
         const userId = req.userData.userId;
-        const { id } = req.body;
+        const id = req.params.id || req.body.id; // Get ID from params or body
         if (!id) {
             return res.status(400).json({ error: 'ID là bắt buộc' });
         }

@@ -1,4 +1,12 @@
+// Use API_URL from config.js
+let API_URL = 'https://todo-app-gpqw.onrender.com'; // Fallback value
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Try to get API_URL from config if it exists in global scope
+    if (typeof window.API_URL !== 'undefined') {
+        API_URL = window.API_URL;
+    }
+    
     // Lấy token từ URL
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');

@@ -1,3 +1,12 @@
+// Use API_URL from config.js
+let API_URL = 'https://todo-app-gpqw.onrender.com'; // Fallback value
+document.addEventListener('DOMContentLoaded', function() {
+    // Try to get API_URL from config if it exists in global scope
+    if (typeof window.API_URL !== 'undefined') {
+        API_URL = window.API_URL;
+    }
+});
+
 // Thêm hàm này vào đầu script
 function getAuthToken() {
     return localStorage.getItem('token');
@@ -74,13 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const arrowForwardBtn = document.getElementById('arrow_forward');
     const confirmBtn = document.getElementById('confirm');
 
-    // Loại bỏ định nghĩa API_BASE và API_URL trùng lặp (dòng 231-232):
-    // const API_BASE = 'https://todo-app-gpqw.onrender.com';
-    // const API_URL = API_BASE;
 
-    // Vì đã có biến API_URL từ config.js
-
-    // Thêm biến này để lưu thông tin phân trang hiện tại
     let currentPagination = null;
 
     // Hàm hiển thị lỗi
@@ -120,12 +123,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 itemsPerPage = parseInt(limitInput.value) || itemsPerPage;
             }
 
-            // Tạo URL có tham số phân trang - UPDATED
+            // Tạo URL có tham số phân trang
             const url = `${API_URL}/todo/tasks?page=${page}&limit=${itemsPerPage}`;
 
             // Gọi API
             const response = await fetch(url);
-            if (!response.ok) throw new Error(`Error: ${response.status}`);
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `Error: ${response.status}`);
+            }
 
             // Xử lý response
             const result = await response.json();
@@ -143,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderTasks([]); // Hiển thị danh sách rỗng nếu có lỗi
         }
     }
+
     function renderPagination(pagination) {
         if (!pagination) return;
 
@@ -433,7 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function doneTask(id, liElement, task) {
         try {
             const newStatus = !task.Status;
-            const response = await fetch(`${API_URL}/todo/tasks/${id}`, { // UPDATED
+            const response = await fetch(`${API_URL}/todo/tasks/${id}`, { 
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, taskname: task.TaskName, status: newStatus })
@@ -471,9 +478,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmDelete = confirm("Bạn có chắc muốn xóa công việc này?");
         if (!confirmDelete) return;
         try {
-            const response = await fetch(`${API_URL}/todo/tasks/${id}`, { // UPDATED
+            const response = await fetch(`${API_URL}/todo/tasks/${id}`, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id }) // Add the ID in the request body
             });
 
             if (!response.ok) throw new Error(`Error: ${response.status}`);
@@ -484,10 +492,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 liElement.remove();
             }, 300);
 
-            // Sau khi xóa, gọi lại getTask để áp dụng filter hiện tại
+            // Giảm thời gian chờ từ 3000ms xuống 500ms để trải nghiệm người dùng tốt hơn
             setTimeout(() => {
                 getTask(currentPagination ? currentPagination.current_page : 1);
-            }, 3000);
+            }, 500);
         } catch (error) {
             console.error('Lỗi khi xóa task:', error);
             showError('Không thể xóa công việc. Vui lòng kiểm tra kết nối.');
@@ -497,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cập nhật task (sử dụng khi sửa nội dung)
     async function updateTask(id, taskname, status) {
         try {
-            const response = await fetch(`${API_URL}/todo/tasks/${id}`, { // UPDATED
+            const response = await fetch(`${API_URL}/todo/tasks/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, taskname, status })
