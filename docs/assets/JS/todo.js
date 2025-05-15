@@ -213,6 +213,9 @@ document.addEventListener('DOMContentLoaded', () => {
             todoList.appendChild(emptyMessage);
         } else {
             tasks.forEach(task => {
+                // Debug: log task object để kiểm tra key id
+                console.log('Task object:', task);
+
                 const li = document.createElement('li');
                 li.classList.add('task-item');
                 const taskInfo = document.createElement('div');
@@ -254,6 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 editBtn.className = 'action-icon edit-icon';
                 editBtn.innerHTML = '<span class="material-symbols-outlined">edit</span>';
                 editBtn.title = 'Sửa';
+                if (!task.id) {
+                    console.error('Task không có id:', task);
+                }
                 editBtn.addEventListener('click', () => editTask(li, task));
                 const doneBtn = document.createElement('button');
                 doneBtn.className = 'action-icon done-icon';
@@ -363,6 +369,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Đánh dấu task hoàn thành
     async function doneTask(id, liElement, task) {
+        if (!id) {
+            showError('Không tìm thấy ID công việc!');
+            return;
+        }
         try {
             const newStatus = !task.status;
             const response = await fetch(`${API_URL}/todo/tasks/${id}`, { 
