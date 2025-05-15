@@ -100,9 +100,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         button.disabled = true;
     }
+    
+    // Check if we're on the forgot password page
+    if (document.querySelector('.forgotpass-container') && !document.querySelector('.reset-password-container')) {
+        initForgotPasswordForm();
+    }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
+function initForgotPasswordForm() {
     const forgotForm = document.querySelector('.auth-body');
     const emailInput = document.querySelector('input[type="email"]');
     const resetButton = document.querySelector('.forgotpass-button');
@@ -208,4 +213,4 @@ document.addEventListener('DOMContentLoaded', () => {
         // Thêm vào đầu form
         forgotForm.insertBefore(errorDiv, forgotForm.firstChild);
     }
-});
+}
